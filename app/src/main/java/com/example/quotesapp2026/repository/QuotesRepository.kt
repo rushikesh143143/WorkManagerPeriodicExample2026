@@ -3,6 +3,9 @@ package com.example.quotesapp2026.repository
 import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.work.ExistingPeriodicWorkPolicy
+import androidx.work.PeriodicWorkRequest
+import androidx.work.WorkManager
 import com.example.quotesapp2026.api.QuoteService
 import com.example.quotesapp2026.database.QuoteDatabase
 import com.example.quotesapp2026.mapper.toQuoteListModelItem
@@ -10,6 +13,7 @@ import com.example.quotesapp2026.mapper.toQuotesTable
 import com.example.quotesapp2026.model.QuoteListModel
 import com.example.quotesapp2026.model.QuoteListModelItem
 import com.example.quotesapp2026.utils.NetworkUtils
+import com.example.quotesapp2026.worker.QuoteWorker
 
 class QuotesRepository(
     private val quoteService: QuoteService,
@@ -18,6 +22,8 @@ class QuotesRepository(
 ) {
 
     private val quotesLiveData = MutableLiveData<QuoteListModel>()
+
+    private val workManager = WorkManager.getInstance(applicationContext)
 
 
 
@@ -62,6 +68,18 @@ class QuotesRepository(
         
         
         
+    }
+
+
+    fun runQuoteBackgroundWork()
+    {
+
+        val request = PeriodicWorkRequest
+            .Builder(QuoteWorker::class.java,16, java.util.concurrent.TimeUnit.MINUTES)
+            .setInitialDelay(15, java.util.concurrent.TimeUnit.SECONDS)
+            .build()
+
+        workManager.enqueueUniquePeriodicWork("quote_worker", ExistingPeriodicWorkPolicy.KEEP, request)
     }
 
 

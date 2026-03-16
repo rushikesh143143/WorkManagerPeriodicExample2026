@@ -1,6 +1,5 @@
 package com.example.quotesapp2026.viewmodels
 
-import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -17,10 +16,17 @@ class MainViewModel (val quotesRepository: QuotesRepository) : ViewModel()
         viewModelScope.launch(Dispatchers.IO) {
         quotesRepository.getQuotes()
         }
+
+
     }
 
     //point to repo live data
     val quotes : LiveData<QuoteListModel>
     get() = quotesRepository.quotes
+
+    fun startQuotesNotificationBackground()
+    {
+        quotesRepository.runQuoteBackgroundWork()
+    }
 
 }

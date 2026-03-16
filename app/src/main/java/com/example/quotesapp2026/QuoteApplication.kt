@@ -18,7 +18,6 @@ import kotlin.jvm.java
 class QuoteApplication : Application() {
 
     lateinit var quotesRepository: QuotesRepository
-    lateinit var workManager: WorkManager
 
     override fun onCreate() {
         super.onCreate()
@@ -30,24 +29,10 @@ class QuoteApplication : Application() {
         val quoteService = RetrofitHelper.getInstance().create(QuoteService::class.java)
         val quoteDatabase = QuoteDatabase.getDatabase(applicationContext)
         quotesRepository = QuotesRepository(quoteService,quoteDatabase,applicationContext)
-        workManager = WorkManager.getInstance(applicationContext)
 
         createNotificationChannel(applicationContext)
 
-        runWorkManager()
-
     }
-
-    private fun runWorkManager() {
-
-         val request = PeriodicWorkRequest
-             .Builder(QuoteWorker::class.java,1, java.util.concurrent.TimeUnit.HOURS)
-             .setInitialDelay(15, java.util.concurrent.TimeUnit.SECONDS)
-             .build()
-
-         workManager.enqueueUniquePeriodicWork("quote_worker", ExistingPeriodicWorkPolicy.KEEP, request)
-    }
-
 
     fun createNotificationChannel(context: Context) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
