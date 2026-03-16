@@ -12,6 +12,7 @@ import androidx.work.CoroutineWorker
 import androidx.work.Worker
 import androidx.work.WorkerParameters
 import com.example.quotesapp2026.R
+import com.example.quotesapp2026.database.QuoteDatabase
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -19,7 +20,10 @@ import java.util.Locale
 class QuoteWorker(context: Context,params: WorkerParameters) : CoroutineWorker(context,params) {
     override suspend fun doWork(): Result {
 
-        showQuoteNotification(applicationContext,"Hello world")
+        val quoteDatabase = QuoteDatabase.getDatabase(applicationContext)
+        val quotes = quoteDatabase.quoteDao().getRandomaQuote()
+
+        showQuoteNotification(applicationContext,quotes.q)
 
         return Result.success()
     }
