@@ -1,15 +1,10 @@
 package com.example.quotesapp2026.worker
 
-import android.R.attr.description
-import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
-import android.content.ContextParams
-import android.os.Build
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import androidx.work.CoroutineWorker
-import androidx.work.Worker
 import androidx.work.WorkerParameters
 import com.example.quotesapp2026.R
 import com.example.quotesapp2026.database.QuoteDatabase
@@ -21,7 +16,7 @@ class QuoteWorker(context: Context,params: WorkerParameters) : CoroutineWorker(c
     override suspend fun doWork(): Result {
 
         val quoteDatabase = QuoteDatabase.getDatabase(applicationContext)
-        val quotes = quoteDatabase.quoteDao().getRandomaQuote()
+        val quotes = quoteDatabase.quoteDao().getRandomQuote()
 
         showQuoteNotification(applicationContext,quotes.q)
 

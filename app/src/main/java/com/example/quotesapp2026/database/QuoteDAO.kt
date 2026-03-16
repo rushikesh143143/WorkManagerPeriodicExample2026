@@ -13,7 +13,7 @@ interface QuoteDAO {
     suspend fun getQuotes() : List<QuotesTable>
 
     @Query("SELECT * FROM quotes ORDER BY RANDOM() LIMIT 1")
-    suspend fun getRandomaQuote() : QuotesTable
+    suspend fun getRandomQuote() : QuotesTable
 
 
 }
