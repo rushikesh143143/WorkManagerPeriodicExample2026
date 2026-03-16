@@ -11,6 +11,10 @@ android {
         }
     }
 
+    buildFeatures {
+        buildConfig = true
+    }
+
     defaultConfig {
         applicationId = "com.example.quotesapp2026"
         minSdk = 24
@@ -22,8 +26,15 @@ android {
     }
 
     buildTypes {
+        debug {
+            buildConfigField("String", "BASE_URL", "\"https://zenquotes.io/api/\"")
+        }
+
         release {
             isMinifyEnabled = false
+
+            buildConfigField("String", "BASE_URL", "\"https://zenquotes.io/api/\"")
+
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"

@@ -7,6 +7,9 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.example.quotesapp2026.adapter.QuotesAdapter
 import com.example.quotesapp2026.viewmodels.MainViewModel
 import com.example.quotesapp2026.viewmodels.MainViewModelFactory
 import kotlinx.coroutines.DelicateCoroutinesApi
@@ -14,6 +17,7 @@ import kotlinx.coroutines.DelicateCoroutinesApi
 class MainActivity : AppCompatActivity() {
 
     lateinit var mainViewModel: MainViewModel
+    lateinit var adapter: QuotesAdapter
 
     @OptIn(DelicateCoroutinesApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -24,16 +28,24 @@ class MainActivity : AppCompatActivity() {
             requestPermissions(arrayOf(android.Manifest.permission.POST_NOTIFICATIONS), 101)
         }
 
+        val recyclerView = findViewById<RecyclerView>(R.id.quotesRecyclerView)
+
+        adapter = QuotesAdapter()
+        recyclerView.layoutManager = LinearLayoutManager(this)
+        recyclerView.adapter = adapter
+
+
        val quotesRepository = (application as QuoteApplication).quotesRepository
 
        mainViewModel = ViewModelProvider(this, MainViewModelFactory(quotesRepository))[MainViewModel::class.java]
 
        mainViewModel.quotes.observe(this, Observer{
            Log.d("Quotes", it.toString())
-           Toast.makeText(this, it.size.toString(), Toast.LENGTH_SHORT).show()
+           adapter.setQuotes(it)
        })
 
        mainViewModel.startQuotesNotificationBackground()
+
 
     }
 
