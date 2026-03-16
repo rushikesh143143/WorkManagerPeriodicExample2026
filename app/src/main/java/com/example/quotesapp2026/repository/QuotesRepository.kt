@@ -75,7 +75,7 @@ class QuotesRepository(
     {
 
         val request = PeriodicWorkRequest
-            .Builder(QuoteWorker::class.java,16, java.util.concurrent.TimeUnit.MINUTES)
+            .Builder(QuoteWorker::class.java,30, java.util.concurrent.TimeUnit.MINUTES)
             .setInitialDelay(15, java.util.concurrent.TimeUnit.SECONDS)
             .build()
 

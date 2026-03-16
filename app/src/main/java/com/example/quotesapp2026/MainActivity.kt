@@ -3,6 +3,8 @@ package com.example.quotesapp2026
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
+import android.view.View
+import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
@@ -28,8 +30,11 @@ class MainActivity : AppCompatActivity() {
             requestPermissions(arrayOf(android.Manifest.permission.POST_NOTIFICATIONS), 101)
         }
 
+        val progressBar = findViewById<ProgressBar>(R.id.progressBar)
         val recyclerView = findViewById<RecyclerView>(R.id.quotesRecyclerView)
 
+
+        progressBar.visibility = View.VISIBLE
         adapter = QuotesAdapter()
         recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.adapter = adapter
@@ -42,6 +47,7 @@ class MainActivity : AppCompatActivity() {
        mainViewModel.quotes.observe(this, Observer{
            Log.d("Quotes", it.toString())
            adapter.setQuotes(it)
+           progressBar.visibility = View.GONE
        })
 
        mainViewModel.startQuotesNotificationBackground()
