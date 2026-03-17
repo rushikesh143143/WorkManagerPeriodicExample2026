@@ -22,8 +22,6 @@ import kotlinx.coroutines.DelicateCoroutinesApi
 class MainActivity : AppCompatActivity() {
 
     private val mainViewModel: MainViewModel by viewModels()
-    //lateinit var adapter: QuotesAdapter
-
     lateinit var qadapter : QuotesAdapt
 
     //view binding object step 1
@@ -46,21 +44,21 @@ class MainActivity : AppCompatActivity() {
         }
 
 
-        binding.progressBar.visibility = View.VISIBLE
-
+        binding.shimmerLayout.startShimmer()
+        binding.shimmerLayout.visibility = View.VISIBLE
         qadapter = QuotesAdapt()
 
 
 
-        //adapter = QuotesAdapter()
         binding.quotesRecyclerView.layoutManager = LinearLayoutManager(this)
+        binding.quotesRecyclerView.setHasFixedSize(true)
         binding.quotesRecyclerView.adapter = qadapter
 
 
         mainViewModel.quotes.observe(this, Observer{
-            //adapter.setQuotes(it)
             qadapter.submitList(it)
-            binding.progressBar.visibility = View.GONE
+            binding.shimmerLayout.startShimmer()
+            binding.shimmerLayout.visibility = View.GONE
         })
 
        mainViewModel.startQuotesNotificationBackground()
