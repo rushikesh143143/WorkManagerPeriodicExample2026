@@ -12,7 +12,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.quotesapp2026.adapter.QuotesAdapter
+import com.example.quotesapp2026.adapter.QuotesAdapt
 import com.example.quotesapp2026.databinding.ActivityMainBinding
 import com.example.quotesapp2026.viewmodels.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -22,7 +22,9 @@ import kotlinx.coroutines.DelicateCoroutinesApi
 class MainActivity : AppCompatActivity() {
 
     private val mainViewModel: MainViewModel by viewModels()
-    lateinit var adapter: QuotesAdapter
+    //lateinit var adapter: QuotesAdapter
+
+    lateinit var qadapter : QuotesAdapt
 
     //view binding object step 1
     private var _binding : ActivityMainBinding ? = null
@@ -46,13 +48,18 @@ class MainActivity : AppCompatActivity() {
 
         binding.progressBar.visibility = View.VISIBLE
 
-        adapter = QuotesAdapter()
+        qadapter = QuotesAdapt()
+
+
+
+        //adapter = QuotesAdapter()
         binding.quotesRecyclerView.layoutManager = LinearLayoutManager(this)
-        binding.quotesRecyclerView.adapter = adapter
+        binding.quotesRecyclerView.adapter = qadapter
 
 
         mainViewModel.quotes.observe(this, Observer{
-            adapter.setQuotes(it)
+            //adapter.setQuotes(it)
+            qadapter.submitList(it)
             binding.progressBar.visibility = View.GONE
         })
 
