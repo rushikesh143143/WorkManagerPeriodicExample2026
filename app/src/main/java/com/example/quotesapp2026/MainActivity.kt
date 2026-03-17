@@ -6,6 +6,7 @@ import android.util.Log
 import android.view.View
 import android.widget.ProgressBar
 import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -14,12 +15,13 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.quotesapp2026.adapter.QuotesAdapter
 import com.example.quotesapp2026.databinding.ActivityMainBinding
 import com.example.quotesapp2026.viewmodels.MainViewModel
-import com.example.quotesapp2026.viewmodels.MainViewModelFactory
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.DelicateCoroutinesApi
 
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
-    lateinit var mainViewModel: MainViewModel
+    private val mainViewModel: MainViewModel by viewModels()
     lateinit var adapter: QuotesAdapter
 
     //view binding object step 1
@@ -49,18 +51,12 @@ class MainActivity : AppCompatActivity() {
         binding.quotesRecyclerView.adapter = adapter
 
 
-       val quotesRepository = (application as QuoteApplication).quotesRepository
-
-       mainViewModel = ViewModelProvider(this, MainViewModelFactory(quotesRepository))[MainViewModel::class.java]
-
-       mainViewModel.quotes.observe(this, Observer{
-           Log.d("Quotes", it.toString())
-           adapter.setQuotes(it)
-           binding.progressBar.visibility = View.GONE
-       })
+        mainViewModel.quotes.observe(this, Observer{
+            adapter.setQuotes(it)
+            binding.progressBar.visibility = View.GONE
+        })
 
        mainViewModel.startQuotesNotificationBackground()
-
 
     }
 

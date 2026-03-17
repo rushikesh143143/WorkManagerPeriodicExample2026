@@ -5,10 +5,13 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.quotesapp2026.model.QuoteListModel
 import com.example.quotesapp2026.repository.QuotesRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class MainViewModel (val quotesRepository: QuotesRepository) : ViewModel()
+@HiltViewModel
+class MainViewModel  @Inject constructor(val quotesRepository: QuotesRepository) : ViewModel()
 {
 
     init {

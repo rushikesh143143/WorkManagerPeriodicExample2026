@@ -9,15 +9,13 @@ import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.PeriodicWorkRequest
 import androidx.work.WorkManager
 import com.example.quotesapp2026.api.QuoteService
-import com.example.quotesapp2026.api.RetrofitHelper
 import com.example.quotesapp2026.database.QuoteDatabase
 import com.example.quotesapp2026.repository.QuotesRepository
 import com.example.quotesapp2026.worker.QuoteWorker
+import dagger.hilt.android.HiltAndroidApp
 import kotlin.jvm.java
-
+@HiltAndroidApp
 class QuoteApplication : Application() {
-
-    lateinit var quotesRepository: QuotesRepository
 
     override fun onCreate() {
         super.onCreate()
@@ -25,13 +23,7 @@ class QuoteApplication : Application() {
     }
 
     private fun initialize() {
-
-        val quoteService = RetrofitHelper.retrofit.create(QuoteService::class.java)
-        val quoteDatabase = QuoteDatabase.getDatabase(applicationContext)
-        quotesRepository = QuotesRepository(quoteService,quoteDatabase,applicationContext)
-
         createNotificationChannel(applicationContext)
-
     }
 
     fun createNotificationChannel(context: Context) {

@@ -1,27 +1,41 @@
 package com.example.quotesapp2026.worker
 
+import android.annotation.SuppressLint
 import android.app.NotificationManager
 import android.content.Context
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
+import androidx.hilt.work.HiltWorker
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import com.example.quotesapp2026.R
 import com.example.quotesapp2026.database.QuoteDatabase
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedInject
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
-class QuoteWorker(context: Context,params: WorkerParameters) : CoroutineWorker(context,params) {
-    override suspend fun doWork(): Result {
+@HiltWorker
+class QuoteWorker @AssistedInject constructor(@Assisted context: Context,
+                                              @Assisted params: WorkerParameters,
+                                              private val quoteDatabase: QuoteDatabase) :
+    CoroutineWorker(context,params)
+{
 
-        val quoteDatabase = QuoteDatabase.getDatabase(applicationContext)
+
+
+        @SuppressLint("SuspiciousIndentation")
+        override suspend fun doWork(): Result {
+
         val quotes = quoteDatabase.quoteDao().getRandomQuote()
 
-        showQuoteNotification(applicationContext,quotes.q)
+            quotes?.let {
+                showQuoteNotification(applicationContext, it.q)
+            }
 
         return Result.success()
-    }
+        }
 
 
 

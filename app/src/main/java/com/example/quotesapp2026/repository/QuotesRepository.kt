@@ -14,11 +14,13 @@ import com.example.quotesapp2026.model.QuoteListModel
 import com.example.quotesapp2026.model.QuoteListModelItem
 import com.example.quotesapp2026.utils.NetworkUtils
 import com.example.quotesapp2026.worker.QuoteWorker
+import dagger.hilt.android.qualifiers.ApplicationContext
+import javax.inject.Inject
 
-class QuotesRepository(
+class QuotesRepository @Inject constructor(
     private val quoteService: QuoteService,
     private val quoteDatabase: QuoteDatabase,
-    private val applicationContext: Context
+    @param:ApplicationContext private val applicationContext: Context
 ) {
 
     private val quotesLiveData = MutableLiveData<QuoteListModel>()
