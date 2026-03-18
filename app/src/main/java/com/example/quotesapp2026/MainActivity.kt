@@ -52,6 +52,8 @@ class MainActivity : AppCompatActivity() {
 
         binding.quotesRecyclerView.layoutManager = LinearLayoutManager(this)
         binding.quotesRecyclerView.setHasFixedSize(true)
+        binding.quotesRecyclerView.alpha = 0f
+        binding.quotesRecyclerView.animate().alpha(1f).setDuration(500)
         binding.quotesRecyclerView.adapter = qadapter
 
 
