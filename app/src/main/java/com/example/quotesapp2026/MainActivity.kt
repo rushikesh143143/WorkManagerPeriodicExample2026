@@ -2,17 +2,14 @@ package com.example.quotesapp2026
 
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.View
-import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.example.quotesapp2026.adapter.QuotesAdapt
+import com.example.quotesapp2026.api.Response
 import com.example.quotesapp2026.databinding.ActivityMainBinding
 import com.example.quotesapp2026.viewmodels.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -22,7 +19,7 @@ import kotlinx.coroutines.DelicateCoroutinesApi
 class MainActivity : AppCompatActivity() {
 
     private val mainViewModel: MainViewModel by viewModels()
-    lateinit var qadapter : QuotesAdapt
+    lateinit var adapter : QuotesAdapt
 
     //view binding object step 1
     private var _binding : ActivityMainBinding ? = null
@@ -46,7 +43,7 @@ class MainActivity : AppCompatActivity() {
 
         binding.shimmerLayout.startShimmer()
         binding.shimmerLayout.visibility = View.VISIBLE
-        qadapter = QuotesAdapt()
+        adapter = QuotesAdapt()
 
 
 
@@ -54,13 +51,30 @@ class MainActivity : AppCompatActivity() {
         binding.quotesRecyclerView.setHasFixedSize(true)
         binding.quotesRecyclerView.alpha = 0f
         binding.quotesRecyclerView.animate().alpha(1f).setDuration(500)
-        binding.quotesRecyclerView.adapter = qadapter
+        binding.quotesRecyclerView.adapter = adapter
 
 
         mainViewModel.quotes.observe(this, Observer{
-            qadapter.submitList(it)
-            binding.shimmerLayout.startShimmer()
-            binding.shimmerLayout.visibility = View.GONE
+
+            when(it){
+                is Response.Loading -> {
+                    binding.shimmerLayout.startShimmer()
+                    binding.shimmerLayout.visibility = View.VISIBLE
+                }
+                is Response.Success -> {
+                    it.data?.let { quotes ->
+                        adapter.submitList(quotes) // <-- now it's List<QuoteListModelItem>
+                    }
+                    binding.shimmerLayout.startShimmer()
+                    binding.shimmerLayout.visibility = View.GONE
+                }
+                is Response.Error -> {
+                    Toast.makeText(this, it.errorMessage, Toast.LENGTH_SHORT).show()
+                    binding.shimmerLayout.startShimmer()
+                    binding.shimmerLayout.visibility = View.GONE
+                }
+            }
+
         })
 
        mainViewModel.startQuotesNotificationBackground()

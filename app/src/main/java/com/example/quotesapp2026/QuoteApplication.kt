@@ -5,15 +5,8 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
 import android.os.Build
-import androidx.work.ExistingPeriodicWorkPolicy
-import androidx.work.PeriodicWorkRequest
-import androidx.work.WorkManager
-import com.example.quotesapp2026.api.QuoteService
-import com.example.quotesapp2026.database.QuoteDatabase
-import com.example.quotesapp2026.repository.QuotesRepository
-import com.example.quotesapp2026.worker.QuoteWorker
 import dagger.hilt.android.HiltAndroidApp
-import kotlin.jvm.java
+import leakcanary.LeakCanary
 @HiltAndroidApp
 class QuoteApplication : Application() {
 

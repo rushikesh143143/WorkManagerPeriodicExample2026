@@ -3,6 +3,7 @@ package com.example.quotesapp2026.viewmodels
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.quotesapp2026.api.Response
 import com.example.quotesapp2026.model.QuoteListModel
 import com.example.quotesapp2026.repository.QuotesRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -24,7 +25,7 @@ class MainViewModel  @Inject constructor(val quotesRepository: QuotesRepository)
     }
 
     //point to repo live data
-    val quotes : LiveData<QuoteListModel>
+    val quotes : LiveData<Response<QuoteListModel>>
     get() = quotesRepository.quotes
 
     fun startQuotesNotificationBackground()

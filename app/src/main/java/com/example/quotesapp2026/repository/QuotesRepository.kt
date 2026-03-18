@@ -7,6 +7,7 @@ import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.PeriodicWorkRequest
 import androidx.work.WorkManager
 import com.example.quotesapp2026.api.QuoteService
+import com.example.quotesapp2026.api.Response
 import com.example.quotesapp2026.database.QuoteDatabase
 import com.example.quotesapp2026.mapper.toQuoteListModelItem
 import com.example.quotesapp2026.mapper.toQuotesTable
@@ -23,13 +24,13 @@ class QuotesRepository @Inject constructor(
     @param:ApplicationContext private val applicationContext: Context
 ) {
 
-    private val quotesLiveData = MutableLiveData<QuoteListModel>()
+    private val quotesLiveData = MutableLiveData<Response<QuoteListModel>>()
 
     private val workManager = WorkManager.getInstance(applicationContext)
 
 
 
-    val quotes : LiveData<QuoteListModel>
+    val quotes : LiveData<Response<QuoteListModel>>
     get() = quotesLiveData
 
 
@@ -38,38 +39,50 @@ class QuotesRepository @Inject constructor(
         //check internet connection
         if(NetworkUtils.isInternetAvailabe(applicationContext))
         {
-            val result = quoteService.getQuotes()
+            try {
+                val result = quoteService.getQuotes()
 
-            if(result.body() != null)
-            {
+                if(result.body() != null)
+                {
 
-                val quotes = result.body()!!.map {
-                    it.toQuotesTable()
+                    val quotes = result.body()!!.map {
+                        it.toQuotesTable()
+                    }
+
+                    quoteDatabase.quoteDao().addQuotes(quotes)
+                    quotesLiveData.postValue(Response.Success(result.body()))
                 }
-
-                quoteDatabase.quoteDao().addQuotes(quotes)
-                quotesLiveData.postValue(result.body())
+                else
+                {
+                    quotesLiveData.postValue(Response.Error("Something went wrong"))
+                }
+            } catch (e: Exception) {
+                quotesLiveData.postValue(Response.Error(e.message.toString()))
             }
         }
         else
         {
-            val quotes = quoteDatabase.quoteDao().getQuotes()
+            try {
+                val quotes = quoteDatabase.quoteDao().getQuotes()
 
-            val mappedQuotes = quotes.map {
-                it.toQuoteListModelItem()
+                val mappedQuotes = quotes.map {
+                    it.toQuoteListModelItem()
+                }
+
+                val quoteListModel = QuoteListModel().apply {
+                    addAll(mappedQuotes)
+                }
+
+                quotesLiveData.postValue(Response.Success(quoteListModel))
+            } catch (e: Exception) {
+                quotesLiveData.postValue(Response.Error(e.message.toString()))
             }
 
-            val quoteListModel = QuoteListModel().apply {
-                addAll(mappedQuotes)
-            }
 
-            quotesLiveData.postValue(quoteListModel)
-
-            
         }
-        
-        
-        
+
+
+
     }
 
 

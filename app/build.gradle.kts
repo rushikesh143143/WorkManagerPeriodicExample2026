@@ -1,3 +1,6 @@
+import org.gradle.kotlin.dsl.debugImplementation
+import org.gradle.kotlin.dsl.releaseImplementation
+
 plugins {
     alias(libs.plugins.android.application)
     id("com.google.devtools.ksp")
@@ -91,5 +94,8 @@ dependencies {
     ksp(libs.hilt.android.compiler)
 
     implementation(libs.shimmer)
+
+    debugImplementation(libs.leakcanary.android)
+    releaseImplementation(libs.leakcanary.noop)
 
 }

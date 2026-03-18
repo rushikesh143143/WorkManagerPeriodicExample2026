@@ -33,6 +33,7 @@ class QuotesAdapt : ListAdapter<QuoteListModelItem, QuotesAdapt.QuotesViewHolder
 
     class DiffCallback : DiffUtil.ItemCallback<QuoteListModelItem>() {
         override fun areItemsTheSame(oldItem: QuoteListModelItem, newItem: QuoteListModelItem): Boolean {
+            // Use a unique identifier if available. Using quote text is OK for now.
             return oldItem.q == newItem.q
         }
 
