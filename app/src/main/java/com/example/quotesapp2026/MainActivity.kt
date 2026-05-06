@@ -56,7 +56,7 @@ class MainActivity : AppCompatActivity() {
 
         mainViewModel.quotes.observe(this, Observer{
 
-            when(it){
+            when(i                                              bt){
                 is Response.Loading -> {
                     binding.shimmerLayout.startShimmer()
                     binding.shimmerLayout.visibility = View.VISIBLE

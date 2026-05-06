@@ -98,4 +98,6 @@ dependencies {
     debugImplementation(libs.leakcanary.android)
     releaseImplementation(libs.leakcanary.noop)
 
+    implementation(libs.androidx.paging.runtime)
+
 }
